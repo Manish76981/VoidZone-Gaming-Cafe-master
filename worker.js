@@ -22,6 +22,8 @@ const BLOCKED_ASSET_PATHS = new Set([
   "/auth.js", "/bookings.js", "/readme.md"
 ]);
 
+let cachedHtml = null;
+
 function getHtmlContent() {
   if (cachedHtml) return cachedHtml;
   const bin = atob(HTML_BASE64);

@@ -116,6 +116,13 @@ await ok("worker.js delegates /api/* to the same handlers (no duplicate backend)
   const src = fs.readFileSync(new URL("../worker.js", import.meta.url), "utf8");
   assert.ok(!/OWNER_PIN|STAFF_PIN|X-VZ-Pin/.test(src));
 });
+await ok("worker serves the homepage HTML at / and an unknown path (no exception)", async () => {
+  for (const path of ["/", "/anything"]) {
+    const res = await worker.fetch(new Request("https://x" + path), {});
+    assert.equal(res.status, 200);
+    assert.ok((await res.text()).includes("<html"));
+  }
+});
 await ok("schema.sql has no seeded plaintext operator passwords and has rate_limits", () => {
   const sql = fs.readFileSync(new URL("../schema.sql", import.meta.url), "utf8");
   assert.ok(!/ccboot_(owner|staff|dev|unlinked)_2026/.test(sql));
